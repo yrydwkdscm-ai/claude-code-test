@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ルーレットゲーム</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <h1>ルーレットゲーム</h1>
+    <p class="sub">ボタンを押してルーレットを回そう！</p>
+
+    <div class="wheel-wrap">
+      <div class="pointer"></div>
+      <div class="wheel" id="wheel">
+        <div class="segment seg0"><span>ハズレ</span></div>
+        <div class="segment seg1"><span>ハズレ</span></div>
+        <div class="segment seg2"><span>当たり</span></div>
+        <div class="segment seg3"><span>ハズレ</span></div>
+        <div class="segment seg4"><span>ハズレ</span></div>
+      </div>
+      <div class="center-dot"></div>
+    </div>
+
+    <button id="spin-button">ルーレットを回す</button>
+
+    <p class="result" id="result"></p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
