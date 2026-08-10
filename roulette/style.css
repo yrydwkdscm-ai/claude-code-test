@@ -1,0 +1,188 @@
+:root {
+  --wheel-size: min(78vw, 320px);
+  --bg: #1e2233;
+  --panel: #262b40;
+  --accent: #ffcc4d;
+  --lose: #4a5372;
+  --lose2: #3a4262;
+  --win: #ffcc4d;
+  --text: #f5f6fa;
+  --pointer: #ff5b5b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #2c3350, #14172a);
+  color: var(--text);
+  font-family: "Hiragino Sans", "Yu Gothic", "Helvetica Neue", Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  padding: 24px 16px;
+}
+
+.container {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(22px, 6vw, 28px);
+}
+
+.sub {
+  margin: 0 0 8px;
+  color: #b7bdd6;
+  font-size: 14px;
+}
+
+.wheel-wrap {
+  position: relative;
+  width: var(--wheel-size);
+  height: var(--wheel-size);
+  margin: 12px 0 20px;
+}
+
+.wheel {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 6px solid var(--panel);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 0 0 2px rgba(255, 255, 255, 0.05);
+  background: conic-gradient(
+    var(--lose) 0deg 72deg,
+    var(--lose2) 72deg 144deg,
+    var(--win) 144deg 216deg,
+    var(--lose) 216deg 288deg,
+    var(--lose2) 288deg 360deg
+  );
+  transition: transform 4s cubic-bezier(0.17, 0.67, 0.17, 1);
+  will-change: transform;
+}
+
+/* Each .segment is a zero-size anchor pinned to the wheel's center,
+   then rotated to point toward its slice. The <span> inside is laid
+   out above the anchor and counter-rotated so the label stays upright. */
+.segment {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+
+.segment span {
+  position: absolute;
+  top: calc(var(--wheel-size) / -2 + 34px);
+  left: 0;
+  display: inline-block;
+  white-space: nowrap;
+  font-size: clamp(12px, 3.2vw, 14px);
+  font-weight: 700;
+  color: #1e2233;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.seg2 span {
+  color: #6b3e00;
+  font-size: clamp(13px, 3.6vw, 16px);
+}
+
+.seg0 { transform: rotate(36deg); }
+.seg1 { transform: rotate(108deg); }
+.seg2 { transform: rotate(180deg); }
+.seg3 { transform: rotate(252deg); }
+.seg4 { transform: rotate(324deg); }
+
+.seg0 span { transform: translateX(-50%) rotate(-36deg); }
+.seg1 span { transform: translateX(-50%) rotate(-108deg); }
+.seg2 span { transform: translateX(-50%) rotate(-180deg); }
+.seg3 span { transform: translateX(-50%) rotate(-252deg); }
+.seg4 span { transform: translateX(-50%) rotate(-324deg); }
+
+.pointer {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 22px solid var(--pointer);
+  z-index: 3;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+}
+
+.center-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  background: var(--panel);
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  z-index: 2;
+}
+
+#spin-button {
+  appearance: none;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 36px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e2233;
+  background: var(--accent);
+  box-shadow: 0 8px 18px rgba(255, 204, 77, 0.35);
+  cursor: pointer;
+  min-height: 48px;
+  min-width: 200px;
+  touch-action: manipulation;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease;
+}
+
+#spin-button:active {
+  transform: scale(0.96);
+}
+
+#spin-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+
+.result {
+  min-height: 28px;
+  font-size: 19px;
+  font-weight: 700;
+  margin: 4px 0 0;
+}
+
+.result.win {
+  color: #6cff9a;
+}
+
+.result.lose {
+  color: #ff8b8b;
+}
+
+@media (max-width: 360px) {
+  .container {
+    gap: 8px;
+  }
+}
