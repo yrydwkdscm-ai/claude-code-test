@@ -23,5 +23,16 @@
     "_comment": "Per-player game-by-game diff history, for the ranking scene's slump graph (Version 2+). Leave a player's entry null/absent when real simulator output isn't available yet -- the renderer falls back to the simple rank/value display instead of fabricating a graph. Shape when available: rank1: [{ \"game\": 0, \"diff\": 0 }, { \"game\": 500, \"diff\": 1200 }, ...] sampled at regular game intervals up to gamesPerPlayer.",
     "rank1": null,
     "rank20": null
-  }
+  },
+
+  "_v3_comment": "Version 3+ theme: a single large-scale simulation run (totalGames), rather than N players x gamesPerPlayer. The automation pipeline is expected to write totalGames plus these result fields once a real 1000-man-game (or larger) run exists. Field names match what was requested for the future simulator-→JSON-→video pipeline.",
+  "totalGames": 10000000,
+  "resultsAreTestData": true,
+  "winRate": "100%",
+  "averageDifference": "+2,732枚",
+  "payoutRate": "111.35%",
+  "bigProbability": "1/228",
+  "regProbability": "1/241",
+  "combinedProbability": "1/117",
+  "grapeProbability": "1/5.61"
 }

@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="ja" style="background:#05050a">
+<head>
+<meta charset="utf-8" />
+<title>scene-v3</title>
+<style>
+  @font-face {
+    font-family: "NotoSansJP-Bold";
+    src: url("__FONT_BOLD_URL__") format("woff2");
+    font-weight: 700;
+    font-display: block;
+  }
+  @font-face {
+    font-family: "NotoSansJP-Black";
+    src: url("__FONT_BLACK_URL__") format("woff2");
+    font-weight: 900;
+    font-display: block;
+  }
+
+  :root {
+    --bg-1: #14141c;
+    --bg-2: #05050a;
+    --fg: #eef0f5;
+    --fg-dim: #9aa0b4;
+    --gold-1: #ffe9a8;
+    --gold-2: #ffb300;
+    --glow: rgba(255, 191, 71, 0.45);
+    --caution: #ffb37a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* Explicit dark background on every ancestor of the page content --
+     html and body both, so there is no frame, anywhere in the pipeline,
+     where unpainted area could read as white. */
+  html, body {
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: var(--bg-2);
+  }
+
+  body {
+    position: relative;
+    font-family: "NotoSansJP-Bold", "Noto Sans CJK JP", sans-serif;
+  }
+
+  /* ---------- background: persistent, continuous for the whole video ---------- */
+  .bg-glow {
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(ellipse 900px 900px at 50% 36%, var(--bg-1) 0%, var(--bg-2) 68%);
+    animation: drift 22s ease-in-out infinite alternate;
+    animation-play-state: paused;
+  }
+  @keyframes drift {
+    0%   { transform: translate(-1.5%, -1%) scale(1.02); }
+    100% { transform: translate(1.5%, 1.5%) scale(1.06); }
+  }
+
+  .bg-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    background-image:
+      repeating-linear-gradient(0deg, var(--fg) 0px, var(--fg) 1px, transparent 1px, transparent 160px),
+      repeating-linear-gradient(90deg, var(--fg) 0px, var(--fg) 1px, transparent 1px, transparent 160px);
+  }
+
+  .bg-scan {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 340px;
+    background: linear-gradient(180deg, transparent, rgba(255, 200, 90, 0.05) 45%, rgba(255, 200, 90, 0.09) 50%, rgba(255, 200, 90, 0.05) 55%, transparent);
+    animation: scan 13s linear infinite;
+    animation-play-state: paused;
+  }
+  @keyframes scan {
+    0%   { transform: translateY(-380px); }
+    100% { transform: translateY(1920px); }
+  }
+
+  .bg-particles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    bottom: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 214, 130, 0.9), rgba(255, 214, 130, 0));
+    animation-name: rise;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-play-state: paused;
+  }
+  @keyframes rise {
+    0%   { transform: translateY(0) scale(0.8); opacity: 0; }
+    12%  { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { transform: translateY(-1650px) scale(1.1); opacity: 0; }
+  }
+
+  body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 260px 40px rgba(0, 0, 0, 0.55);
+    pointer-events: none;
+  }
+
+  /* ---------- scenes: stacked, opacity-crossfaded by JS (never removed
+     from the DOM, never re-navigated -- see the driver script) ---------- */
+  .scene {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.032);
+    pointer-events: none;
+  }
+  .scene.zoomed {
+    transition: transform 0.7s ease-out;
+    transform: scale(1);
+  }
+
+  .safe-area {
+    position: absolute;
+    left: 90px;
+    right: 90px;
+    top: 300px;
+    bottom: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--line-gap, 40px);
+  }
+
+  .line {
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    animation: lineFade 0.4s ease-out forwards;
+    animation-play-state: paused;
+  }
+  @keyframes lineFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .line.enter-fadeUp { animation-name: lineFadeUp; }
+  @keyframes lineFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .line-fit {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 28px;
+    white-space: nowrap;
+    line-height: 1.15;
+    transform-origin: center;
+    transform: scale(var(--fit-scale, 1));
+  }
+
+  .role-label {
+    font-family: "NotoSansJP-Bold", sans-serif;
+    font-weight: 700;
+    font-size: var(--fs-label, 66px);
+    color: var(--fg);
+    letter-spacing: 2px;
+  }
+  .role-heading {
+    font-family: "NotoSansJP-Black", sans-serif;
+    font-weight: 900;
+    font-size: var(--fs-heading, 84px);
+    color: var(--fg);
+    letter-spacing: 1px;
+  }
+  .role-accent {
+    display: inline-block;
+    font-family: "NotoSansJP-Black", sans-serif;
+    font-weight: 900;
+    font-size: var(--fs-accent, 150px);
+    background: linear-gradient(180deg, var(--gold-1) 10%, var(--gold-2) 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 46px var(--glow);
+    letter-spacing: 1px;
+  }
+  .role-tag {
+    font-family: "NotoSansJP-Bold", sans-serif;
+    font-weight: 700;
+    font-size: var(--fs-tag, 50px);
+    color: var(--fg-dim);
+    background: rgba(255, 255, 255, 0.07);
+    border: 2px solid rgba(255, 255, 255, 0.14);
+    border-radius: 18px;
+    padding: 10px 30px;
+    letter-spacing: 1px;
+  }
+  .role-note {
+    font-family: "NotoSansJP-Bold", sans-serif;
+    font-weight: 700;
+    font-size: var(--fs-note, 54px);
+    color: var(--fg-dim);
+    letter-spacing: 1px;
+  }
+  .role-caution {
+    font-family: "NotoSansJP-Bold", sans-serif;
+    font-weight: 700;
+    font-size: var(--fs-caution, 46px);
+    color: var(--caution);
+    letter-spacing: 1px;
+  }
+  .role-testtag {
+    font-family: "NotoSansJP-Bold", sans-serif;
+    font-weight: 700;
+    font-size: var(--fs-testtag, 32px);
+    color: var(--caution);
+    background: rgba(255, 179, 122, 0.08);
+    border: 2px solid rgba(255, 179, 122, 0.35);
+    border-radius: 12px;
+    padding: 6px 22px;
+    letter-spacing: 4px;
+  }
+
+  /* number pop-in: small -> brief overshoot -> settle */
+  .pop-normal, .pop-strong, .pop-hero, .pop-mega {
+    display: inline-block;
+    opacity: 0;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+    animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center;
+  }
+  .pop-normal { animation-name: popNormal; animation-duration: 0.5s; }
+  .pop-strong { animation-name: popStrong; animation-duration: 0.6s; }
+  .pop-hero   { animation-name: popHero;   animation-duration: 0.7s; }
+  .pop-mega   { animation-name: popMega;   animation-duration: 0.85s; }
+  @keyframes popNormal {
+    0%   { opacity: 0; transform: scale(0.86); }
+    60%  { opacity: 1; transform: scale(1.09); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes popStrong {
+    0%   { opacity: 0; transform: scale(0.8); }
+    55%  { opacity: 1; transform: scale(1.16); }
+    80%  { transform: scale(0.97); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes popHero {
+    0%   { opacity: 0; transform: scale(0.74); }
+    50%  { opacity: 1; transform: scale(1.22); }
+    75%  { transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes popMega {
+    0%   { opacity: 0; transform: scale(0.66); }
+    45%  { opacity: 1; transform: scale(1.30); }
+    65%  { transform: scale(0.94); }
+    82%  { transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .glow-burst, .glow-burst-mega {
+    position: absolute;
+    inset: -30%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glow), transparent 70%);
+    opacity: 0;
+    transform: scale(0.5);
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .glow-burst { inset: -30%; animation-name: burst; animation-duration: 0.7s; }
+  .glow-burst-mega { inset: -55%; animation-name: burst; animation-duration: 1s; }
+  @keyframes burst {
+    0%   { opacity: 0; transform: scale(0.5); }
+    35%  { opacity: 0.9; }
+    100% { opacity: 0; transform: scale(1.6); }
+  }
+
+  .accent-wrap { position: relative; display: inline-block; }
+
+  /* ---------- slump graph ---------- */
+  .graph-wrap {
+    opacity: 0;
+    animation: lineFade 0.5s ease-out forwards;
+    animation-play-state: paused;
+  }
+  .slump-graph-line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: drawLine 1.1s ease-out forwards;
+    animation-play-state: paused;
+  }
+  @keyframes drawLine { to { stroke-dashoffset: 0; } }
+  .slump-graph-dot {
+    opacity: 0;
+    animation: popNormal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation-delay: 1.0s;
+    animation-play-state: paused;
+    transform-origin: center;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-scan"></div>
+  <div class="bg-particles">__PARTICLES_HTML__</div>
+
+  __SCENES_HTML__
+
+  <script>
+    // ---- global background animations: start once, run continuously ----
+    function startBackground() {
+      var bg = document.querySelectorAll(".bg-glow, .bg-scan, .particle");
+      bg.forEach(function (el) { el.style.animationPlayState = "running"; });
+    }
+
+    function fitLines(root) {
+      var safeArea = root.querySelector(".safe-area");
+      if (!safeArea) return;
+      var maxWidth = safeArea.clientWidth;
+      var fits = Array.prototype.slice.call(root.querySelectorAll(".line-fit"));
+      fits.forEach(function (fit) {
+        var natural = fit.scrollWidth;
+        if (natural > maxWidth) {
+          var scale = (maxWidth / natural) * 0.96;
+          fit.style.setProperty("--fit-scale", scale.toFixed(4));
+        }
+      });
+    }
+
+    // ---- per-scene content: triggered once when the scene's start time
+    // is crossed by the driver below ----
+    function triggerScene(sceneEl) {
+      if (sceneEl.dataset.triggered === "1") return;
+      sceneEl.dataset.triggered = "1";
+      sceneEl.classList.add("zoomed");
+      var els = sceneEl.querySelectorAll(
+        ".line, .pop-normal, .pop-strong, .pop-hero, .pop-mega, .glow-burst, " +
+        ".glow-burst-mega, .graph-wrap, .slump-graph-line, .slump-graph-dot"
+      );
+      els.forEach(function (el) { el.style.animationPlayState = "running"; });
+    }
+
+    // ---- crossfade driver: opacity for each scene is a pure function of
+    // elapsed time, computed every frame. No navigation, no DOM swap --
+    // scenes only ever fade against the persistent dark background, so
+    // there is no moment a blank/white document could show through. ----
+    var CROSSFADE = 0.4; // seconds
+    var scenes = Array.prototype.slice.call(document.querySelectorAll(".scene")).map(function (el) {
+      return { el: el, start: parseFloat(el.dataset.start), end: parseFloat(el.dataset.end) };
+    });
+
+    function opacityFor(start, end, t) {
+      if (t <= start || t >= end) return 0;
+      var fadeIn = Math.min(1, (t - start) / CROSSFADE);
+      var fadeOut = Math.min(1, (end - t) / CROSSFADE);
+      return Math.min(fadeIn, fadeOut, 1);
+    }
+
+    var t0 = null;
+    function tick(now) {
+      if (t0 === null) return;
+      var t = (now - t0) / 1000;
+      scenes.forEach(function (s) {
+        if (t >= s.start - 0.02) triggerScene(s.el);
+        s.el.style.opacity = opacityFor(s.start, s.end, t).toFixed(4);
+      });
+      requestAnimationFrame(tick);
+    }
+
+    function startAll() {
+      scenes.forEach(function (s) { fitLines(s.el); });
+      startBackground();
+      t0 = performance.now();
+      document.documentElement.setAttribute("data-started", "1");
+      requestAnimationFrame(tick);
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(startAll);
+        });
+      });
+    } else {
+      startAll();
+    }
+  </script>
+</body>
+</html>
