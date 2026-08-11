@@ -1,0 +1,15 @@
+{
+  "name": "juggler-video-test",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Standalone test: generate a 30s vertical MP4 short from fixed Juggler simulation data. Not connected to any simulator.",
+  "type": "module",
+  "scripts": {
+    "render": "node scripts/render-frames.mjs",
+    "video": "node scripts/build-video.mjs",
+    "all": "npm run render && npm run video"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.48.0"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "machine": "マイジャグラーV",
+  "setting": 6,
+  "players": 20,
+  "gamesPerPlayer": 8000,
+  "stats": {
+    "avgDiff": "+2,732枚",
+    "winRate": "100%",
+    "big": "1/228",
+    "reg": "1/241",
+    "combined": "1/117",
+    "grape": "1/5.61",
+    "avgPayout": "111.35%"
+  },
+  "ranking": {
+    "rank1": "+5,915枚",
+    "rank2": "+5,185枚",
+    "rank19": "+476枚",
+    "rank20": "+368枚"
+  },
+  "note": "今回の20人は全員プラス。ただし毎回この結果になるとは限らない。"
+}
