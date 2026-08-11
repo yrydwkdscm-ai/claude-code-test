@@ -7,7 +7,10 @@
   "scripts": {
     "render": "node scripts/render-frames.mjs",
     "video": "node scripts/build-video.mjs",
-    "all": "npm run render && npm run video"
+    "all": "npm run render && npm run video",
+    "render:v2": "node scripts/render-frames.v2.mjs",
+    "video:v2": "node scripts/build-video.v2.mjs",
+    "all:v2": "npm run render:v2 && npm run video:v2"
   },
   "devDependencies": {
     "playwright-core": "^1.48.0"

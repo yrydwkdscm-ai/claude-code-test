@@ -18,5 +18,10 @@
     "rank19": "+476枚",
     "rank20": "+368枚"
   },
-  "note": "今回の20人は全員プラス。ただし毎回この結果になるとは限らない。"
+  "note": "今回の20人は全員プラス。ただし毎回この結果になるとは限らない。",
+  "slumpGraphs": {
+    "_comment": "Per-player game-by-game diff history, for the ranking scene's slump graph (Version 2+). Leave a player's entry null/absent when real simulator output isn't available yet -- the renderer falls back to the simple rank/value display instead of fabricating a graph. Shape when available: rank1: [{ \"game\": 0, \"diff\": 0 }, { \"game\": 500, \"diff\": 1200 }, ...] sampled at regular game intervals up to gamesPerPlayer.",
+    "rank1": null,
+    "rank20": null
+  }
 }
