@@ -6,22 +6,40 @@
 - ジャグラーシミュレーター本体との連携は行っていません。今回は `data/sample-data.json` に書かれた**固定データ**のみを使用します。
 - 生成した動画（MP4本体）はこのリポジトリにはコミットしていません。ソースコード（テンプレート・データ・スクリプト）のみを管理しています。
 
-## Version 1 / 2 / 3 / 4
+## Version 1 / 2 / 3 / 4 / 5
 
 各バージョンはそのまま残しており、**別ファイル・別出力名**として並行して用意しています。古いバージョンのファイルは一切変更していません。
 
-| | Version 1 | Version 2 | Version 3 | Version 4 |
-| --- | --- | --- | --- | --- |
-| テーマ | 20人×8000G比較 | 20人×8000G比較 | 1000万Gの大規模シミュレーション（見出しのみ。数値はTEST DATA） | **実際にシミュレーターで出した8000万G（1万人×8000G）の実データ** |
-| シーン定義 | `scenes/timeline.js` | `scenes/timeline.v2.js` | `scenes/timeline.v3.js` | `scenes/timeline.v4.js` |
-| テンプレート | `template/scene.html` | `template/scene.v2.html` | `template/scene.v3.html` | `template/scene.v4.html` |
-| 描画方式 | 静止画スクショ→ffmpegループ | シーンごとに別ページを実時間録画→ffmpegで連結 | 全シーンを1枚のページに重ね、JSでopacityクロスフェード→1本の連続録画をffmpegでトリム・書き出し | V3と同じ単一録画方式 + カウントアップ・数字ロール・画面振動・スロットリール風背景 |
-| 文字デザイン | グラデーション塗り＋グロー | 同左 | 同左 | **太字＋黒縁アウトライン**（白＝通常、金＝重要数字、緑＝プラス、赤＝マイナス） |
-| フォント | `assets/fonts/*.subset.woff2` | `assets/fonts/*.v2.subset.woff2` | `assets/fonts/*.v3.subset.woff2` | `assets/fonts/*.v4.subset.woff2` |
-| 実行コマンド | `npm run all` | `npm run all:v2` | `npm run all:v3` | `npm run all:v4` |
-| 出力ファイル | `output/juggler-test-30s.mp4` | `output/juggler-test-30s-v2.mp4` | `output/juggler-test-30s-v3.mp4` | `output/juggler-test-30s-v4.mp4` |
+| | Version 1 | Version 2 | Version 3 | Version 4 | Version 5 |
+| --- | --- | --- | --- | --- | --- |
+| テーマ | 20人×8000G比較 | 20人×8000G比較 | 1000万Gの大規模シミュレーション（見出しのみ。数値はTEST DATA） | 実際にシミュレーターで出した8000万G（1万人×8000G）の実データ | **同じ実データ + 案内役キャラクター「ジャグみ」** |
+| シーン定義 | `scenes/timeline.js` | `scenes/timeline.v2.js` | `scenes/timeline.v3.js` | `scenes/timeline.v4.js` | `scenes/timeline.v5.js` |
+| テンプレート | `template/scene.html` | `template/scene.v2.html` | `template/scene.v3.html` | `template/scene.v4.html` | `template/scene.v5.html` |
+| 描画方式 | 静止画スクショ→ffmpegループ | シーンごとに別ページを実時間録画→ffmpegで連結 | 全シーンを1枚のページに重ね、JSでopacityクロスフェード→1本の連続録画をffmpegでトリム・書き出し | V3と同じ単一録画方式 + カウントアップ・数字ロール・画面振動・スロットリール風背景 | V4と同じ単一録画方式 + キャラクター・背景演出（ネオン/GOGOランプ/差枚グラフ/100人アイコン）・暗転演出 |
+| 文字デザイン | グラデーション塗り＋グロー | 同左 | 同左 | 太字＋黒縁アウトライン（白＝通常、金＝重要数字、緑＝プラス、赤＝マイナス） | 同左 + ピンクのブランド文字 |
+| フォント | `assets/fonts/*.subset.woff2` | `assets/fonts/*.v2.subset.woff2` | `assets/fonts/*.v3.subset.woff2` | `assets/fonts/*.v4.subset.woff2` | `assets/fonts/*.v5.subset.woff2` |
+| 実行コマンド | `npm run all` | `npm run all:v2` | `npm run all:v3` | `npm run all:v4` | `npm run all:v5` |
+| 出力ファイル | `output/juggler-test-30s.mp4` | `output/juggler-test-30s-v2.mp4` | `output/juggler-test-30s-v3.mp4` | `output/juggler-test-30s-v4.mp4` | `output/juggler-test-30s-v5.mp4` |
 
-`data/sample-data.json` は全バージョンで共有していますが、新しいバージョンのフィールドは**追加のみ**で、古いバージョンが参照する既存フィールドは変更していません。
+`data/sample-data.json` は全バージョンで共有していますが、新しいバージョンのフィールドは**追加のみ**で、古いバージョンが参照する既存フィールドは変更していません。V5はV4が追加した `data.v4`（実データ）をそのまま再利用し、新規フィールドの追加はありません。
+
+### Version 5: キャラクター「ジャグみ」の追加
+
+ユーザー提供のキャラクターシート（`ジャグラー検証会`のマスコット「ジャグみ」）から、以下7点をPNG素材として切り出し・背景除去して `assets/characters/` に格納しています。**新規キャラクターは生成せず、シート内の絵をそのまま使用**しています。
+
+| 表情 | ファイル |
+| --- | --- |
+| 通常・笑顔（SDミニキャラ、全身） | `jagumi-chibi-full.png` |
+| 通常・笑顔（バスト） | `jagumi-normal-smile.png` |
+| 喜び・大当たり | `jagumi-joy-win.png` |
+| 驚き・衝撃 | `jagumi-surprise-shock.png` |
+| 考える・疑問 | `jagumi-thinking.png` |
+| 解説・分析 | `jagumi-explain.png` |
+| ガーン・落ち込み | `jagumi-dejected.png` |
+
+**切り出し方法**: シート全体（1230×1278px）は背景と一体化した1枚のキービジュアルのため、`rembg`（`isnet-anime`モデル）で背景を自動除去しました。冒頭の全身ヒーローポーズはスロット図柄やコミック風装飾と一体化していて自動分離できなかったため使用せず、代わりに背景が単純な「表情差分」6点とSDミニキャラ（全身）のみを素材化しています（詳細な切り出し座標は `scripts/render-video.v5.mjs` の冒頭コメントを参照）。
+
+**画面内での扱い**: 主役の優先順位（①数字/結論 ②ジャグみ ③背景演出 ④背景）を守るため、データを見せるシーンでは基本的に画面下の左右コーナーに小さく配置し、中央のテキストとは重ならないようにしています（`.jagumi-slot`のCSS層をテキストより下のz-indexに固定）。冒頭・結末など「登場」を強調したいシーンのみ、テキストのセーフエリアを上に詰めて（`--safe-bottom`変数）画面下部を広く確保し、キャラクターを大きく表示しています。ポップイン・スライドイン・上下バウンス（idle bob）・驚きの振動などをCSSアニメーションで付与しています。
 
 ### Version 3でのアーキテクチャ変更（白フラッシュ対策）
 
@@ -90,34 +108,44 @@ npm run all:v3                   # 上記まとめて実行
 npm run render:v4              # scenes/timeline.v4.js を元に frames/v4/video.webm を1本の連続録画として書き出し
 npm run video:v4                # frames/v4/video.webm から output/juggler-test-30s-v4.mp4 を生成
 npm run all:v4                   # 上記まとめて実行
+
+# Version 5（キャラクター追加）
+npm run render:v5              # scenes/timeline.v5.js を元に frames/v5/video.webm を1本の連続録画として書き出し
+npm run video:v5                # frames/v5/video.webm から output/juggler-test-30s-v5.mp4 を生成
+npm run all:v5                   # 上記まとめて実行
 ```
 
-`render-video.v4.mjs`（V3も同様）は `--html-only` フラグを付けると録画をスキップしてHTMLだけを書き出します。デザイン調整時にPlaywrightでスクリーンショットを撮って素早く確認するのに使えます。
+`render-video.v3/v4/v5.mjs` は `--html-only` フラグを付けると録画をスキップしてHTMLだけを書き出します。デザイン調整時にPlaywrightでスクリーンショットを撮って素早く確認するのに使えます。
 
 ## フォルダ構成
 
 ```
 juggler-video-test/
-├── data/sample-data.json       … 今回の固定データ（V1〜V4共有。V4は data.v4 に実データを別名前空間で追加）
+├── data/sample-data.json       … 今回の固定データ（V1〜V5共有。V4は data.v4 に実データを別名前空間で追加、V5はそれをそのまま再利用）
 ├── scenes/
 │   ├── timeline.js              … V1: 各シーンの表示テキスト・秒数・強調ルール
 │   ├── timeline.v2.js           … V2: 同上 + アニメーション指定（pop/delay/enter）+ スランプグラフ分岐
 │   ├── timeline.v3.js           … V3: 同上 + 1000万Gテーマの冒頭3シーン + TEST DATAタグ
 │   ├── timeline.v4.js           … V4: 同上 + カウントアップ/数字ロール/画面振動 + 実データ(data.v4)読み込み
-│   └── slump-graph.js           … 実データがある場合にSVG折れ線グラフを生成するユーティリティ（現状未使用、V2〜V4共通）
+│   ├── timeline.v5.js           … V5: 同上 + シーンごとのジャグみ配置(jagumi)・背景演出(effects)設定
+│   └── slump-graph.js           … 実データがある場合にSVG折れ線グラフを生成するユーティリティ（現状未使用、V2〜V5共通）
 ├── template/
 │   ├── scene.html                … V1: 共通HTMLテンプレート（静止画用）
 │   ├── scene.v2.html              … V2: 共通HTMLテンプレート（シーンごとに別ページ、背景モーション・数字ポップイン）
 │   ├── scene.v3.html              … V3: 全シーンを1ページに重ねてopacityクロスフェード（白フラッシュ対策）
-│   └── scene.v4.html              … V4: V3構成 + スロットリール/GOGOランプ/差枚グラフ風背景 + 黒縁太字デザイン
-├── assets/fonts/                  … 同梱フォント（バージョンごとに *.subset.woff2 〜 *.v4.subset.woff2、使用文字のみのsubset）
+│   ├── scene.v4.html              … V4: V3構成 + スロットリール/GOGOランプ/差枚グラフ風背景 + 黒縁太字デザイン
+│   └── scene.v5.html              … V5: V4構成 + ジャグみ表示層・暗転オーバーレイ・グラフ3パターン・100人アイコン
+├── assets/
+│   ├── fonts/                     … 同梱フォント（バージョンごとに *.subset.woff2 〜 *.v5.subset.woff2、使用文字のみのsubset）
+│   └── characters/                … V5: ジャグみのPNG素材7点（ユーザー提供シートから切り出し・背景除去済み）
 ├── scripts/
 │   ├── render-frames.mjs / build-video.mjs           … V1パイプライン
 │   ├── render-frames.v2.mjs / build-video.v2.mjs      … V2パイプライン（シーンごとに動画録画→ffmpegで連結）
 │   ├── render-video.v3.mjs / build-video.v3.mjs        … V3パイプライン（1本の連続録画→ffmpegでトリム・書き出し）
-│   └── render-video.v4.mjs / build-video.v4.mjs         … V4パイプライン（同上 + カウントアップ/ロール演出）
-├── frames/                        … 生成物（V1: *.png、V2: v2/*.webm、V3: v3/video.webm、V4: v4/video.webm。gitignore対象）
-└── output/                        … 最終MP4（V1〜V4とも。gitignore対象）
+│   ├── render-video.v4.mjs / build-video.v4.mjs         … V4パイプライン（同上 + カウントアップ/ロール演出）
+│   └── render-video.v5.mjs / build-video.v5.mjs          … V5パイプライン（同上 + ジャグみ/背景演出の描画）
+├── frames/                        … 生成物（V1: *.png、V2〜V5: vN/video.webm。gitignore対象）
+└── output/                        … 最終MP4（V1〜V5とも。gitignore対象）
 ```
 
 ## シーン構成
@@ -179,32 +207,54 @@ juggler-video-test/
 | 21.0–25.0s | 「しかも設定6なのに…」→「最低差枚」→「-2,816枚」 | 赤文字・強グロー（答え②） |
 | 25.0–30.0s | 「設定6でも」→「短期では負ける」→「8000万Gシミュレーション」→「次は設定1を8000万G？」 | 結論を最強調、最後に次回予告を小さく |
 
-`data.v4` に格納した実データ（`machine` / `setting` / `gamesPerPerson` / `participants` / `totalGames` / `averageDifference` / `winRate` / `lossRate` / `payoutRate` / `bigProbability` / `regProbability` / `combinedProbability` / `grapeProbability` / `cherryProbability` / `replayProbability` / `maxDifference` / `minDifference`）を `scenes/timeline.v4.js` が読み込んで整形（`+2,802枚` のようなカンマ区切り・符号付き表記など）しています。HTMLへの直接ベタ書きはしていません。`bigProbability` 等の確率値・`maxDifference` はJSONには保持していますが、今回の構成（1画面1メッセージ・答えは勝率と最低差枚に集中）では画面には出していません。BIG/REGの合計回数（架空の逆算値）は一切表示していません。
+`data.v4` に格納した実データ（`machine` / `setting` / `gamesPerPerson` / `participants` / `totalGames` / `averageDifference` / `winRate` / `lossRate` / `payoutRate` / `bigProbability` / `regProbability` / `combinedProbability` / `grapeProbability` / `cherryProbability` / `replayProbability` / `maxDifference` / `minDifference`）を `scenes/timeline.v4.js`（V5は `timeline.v5.js`）が読み込んで整形（`+2,802枚` のようなカンマ区切り・符号付き表記など）しています。HTMLへの直接ベタ書きはしていません。`bigProbability` 等の確率値・`maxDifference` はJSONには保持していますが、今回の構成（1画面1メッセージ・答えは勝率と最低差枚に集中）では画面には出していません。BIG/REGの合計回数（架空の逆算値）は一切表示していません。
+
+### Version 5（0〜30秒、キャラクター追加）
+
+| 時間 | 内容 | ジャグみ | 背景演出 |
+| --- | --- | --- | --- |
+| 0–0.7s | 「設定6を」 | 全身(SD)・登場ポップイン | 通常 |
+| 0.7–1.7s | 「8000万G」（動画中最大） | 全身(SD)・左寄り | 通常 |
+| 1.7–2.5s | 「回した結果…」 | 考える・疑問 | 通常 |
+| 2.5–5.0s | 「設定6なら」→「全員勝てる？」 | 考える・疑問 + 「？」演出 | 通常 |
+| 5.0–8.0s | 「1万人が」「1人8000G」＋0→8000万Gカウントアップ | 全身(SD)・右コーナー | リール高速回転 |
+| 8.0–11.0s | 「8000万Gの平均差枚」→「+2,802枚」（緑） | 喜び・大当たり | グラフ上昇（緑） |
+| 11.0–14.0s | 「平均出率」→「111.64%」 | 解説・分析 | グラフ上昇（緑） |
+| 14.0–17.0s | 「じゃあ1万人、」→「ほぼ全員勝った？」 | 考える・疑問 | 通常 |
+| 17.0–19.5s | 「勝率」→「96.89%」 | 驚き・衝撃 | 100人アイコン（3人だけ赤） |
+| 19.5–20.5s | 「でも…」 | ガーン・落ち込み | 画面暗転＋ネオン/リール減光 |
+| 20.5–23.5s | 「最低差枚」→「-2,816枚」（赤）→「設定6でも負ける。」 | 驚き・衝撃 | グラフ下降（赤） |
+| 23.5–27.0s | 「設定6でも」→「8,000Gなら負けることがある」 | 解説・分析 | グラフ中立 |
+| 27.0–30.0s | 「8000万G検証」→「次は設定1を8000万G回したら？」→「ジャグラー検証会」 | 全身(SD)・登場ポップイン | 通常 |
+
+**レイヤー優先順位**: ①その場面の数字/結論（テキスト、z-index最上位）②ジャグみ（z-index中位、下部コーナー中心に配置）③スロット/グラフ演出④背景、の順で常にキャラクターが数字を隠さないようにしています。「でも…」の暗転は黒いオーバーレイをテキストより下・背景より上のレイヤーに重ねる方式で、明るさを足すのではなく引くだけなので白フラッシュは発生し得ません。
 
 ## スランプグラフについて
 
-`scenes/timeline.v2.js` 〜 `timeline.v4.js` のランキング/1位関連シーンは、`data/sample-data.json` の `slumpGraphs.rank1`（ゲーム数ごとの差枚推移の配列）が存在する場合のみ、`scenes/slump-graph.js` でSVG折れ線グラフを自動生成して表示します。今回はシミュレーターからこのデータを取得していないため `null` のままにしてあり、架空のグラフは生成せず、代わりに数値表示にフォールバックしています。将来シミュレーターが `{ game, diff }` の配列を出力するようになれば、このフィールドを埋めるだけでグラフ表示に自動的に切り替わります。
+`scenes/timeline.v2.js` 〜 `timeline.v5.js` のランキング/1位関連シーンは、`data/sample-data.json` の `slumpGraphs.rank1`（ゲーム数ごとの差枚推移の配列）が存在する場合のみ、`scenes/slump-graph.js` でSVG折れ線グラフを自動生成して表示します。今回はシミュレーターからこのデータを取得していないため `null` のままにしてあり、架空のグラフは生成せず、代わりに数値表示にフォールバックしています。将来シミュレーターが `{ game, diff }` の配列を出力するようになれば、このフィールドを埋めるだけでグラフ表示に自動的に切り替わります。
 
-## 白フラッシュ対策（Version 3で導入、V4も継承）
+## 白フラッシュ対策（Version 3で導入、V4・V5も継承）
 
-V2で報告された「シーン切り替え時に一瞬白く光る」問題への対応として、V3では以下を実施しています。V4もこのアーキテクチャをそのまま使っています。
+V2で報告された「シーン切り替え時に一瞬白く光る」問題への対応として、V3では以下を実施しています。V4・V5もこのアーキテクチャをそのまま使っています。
 
-1. **アーキテクチャ変更**: シーンごとに別ページを開いて録画していたV2に対し、V3/V4は全シーンを1ページに重ねて配置し、JSでopacityをフレームごとに計算してクロスフェードさせる方式に変更。ページ読み込み（ナビゲーション）が動画全体で1回だけになり、「読み込み直後の白い初期画面」が映り込みうる箇所も1回に減少。
+1. **アーキテクチャ変更**: シーンごとに別ページを開いて録画していたV2に対し、V3〜V5は全シーンを1ページに重ねて配置し、JSでopacityをフレームごとに計算してクロスフェードさせる方式に変更。ページ読み込み（ナビゲーション）が動画全体で1回だけになり、「読み込み直後の白い初期画面」が映り込みうる箇所も1回に減少。
 2. **多重の背景色ガード**: `<html style="background:...">` の直接指定、CSS内での再指定、`context.addInitScript` による毎ドキュメントへの強制適用（読み込み前の空白ページも含む）。
 3. **録画開始位置の実測トリム**: Playwright録画開始からコンテンツのアニメーションが実際に始まるまでの時間を実測し、安全マージンを加えてffmpegでトリム。トリム後の長さが不足する場合はビルドスクリプトがエラーで止まる（無音のまま短い動画が出力されることはない）。
-4. **検証**: 完成したMP4の全900フレーム（30fps×30秒）について `signalstats` でフレーム平均輝度(YAVG)を解析。V3は最大39/255、V4は最大43/255（いずれも0〜255スケール、255が白）に収まっており、白飛びは一切発生していないことを数値で確認済み。あわせて各シーン切り替え前後のフレームを画像として抽出し、目視でも確認しています。
+4. **検証**: 完成したMP4の全900フレーム（30fps×30秒）について `signalstats` でフレーム平均輝度(YAVG)を解析。V3は最大39/255、V4は最大43/255、V5は最大46/255（いずれも0〜255スケール、255が白）に収まっており、白飛びは一切発生していないことを数値で確認済み。あわせて各シーン切り替え前後のフレームを画像として抽出し、目視でも確認しています。V5で追加した暗転演出（「でも…」）も黒のオーバーレイのみで実装しており、明るさが増す方向の変化は一切ありません。
 
-## 文字のはみ出し防止について（V4での学び）
+## 文字のはみ出し防止について（V4での学び、V5も継承）
 
 V4でデザインを「グラデーション塗り＋グロー」から「太字＋`-webkit-text-stroke`の黒縁」に変更した際、縁取り(stroke)は通常のレイアウト計算（`scrollWidth`）に含まれず、また演出用の光彩（`.glow-burst`）を文字と同じ要素の中に置くとその巨大な当たり判定が誤って文字幅の一部として計測されてしまうことが分かりました。そのため、V4の `fitLines()` は次のように修正しています。
 
 - 光彩(`.glow-burst` 系)は文字を測定する `.line-fit` の**外**（兄弟要素）に配置し、幅測定に影響しないようにする。
 - 縁取り分の視覚的なはみ出しを見込んで、判定に使う安全幅を通常より広め（-40px、縮小係数0.94）に取ってある。
 
-この対策後、全シーンをスクリーンショット・実フレームの両方で目視確認し、はみ出しがないことを確認しています。
+V5ではこれに加えて、キャラクター表示層(`.jagumi-slot`)を文字のセーフエリア(`.safe-area`)とは完全に別の絶対配置要素にし、`fitLines()`の測定対象からも最初から除外しているため、キャラクターがテキストの幅計算に影響することはありません。全シーンをスクリーンショット・実フレームの両方で目視確認し、はみ出しがないこと、キャラクターが数字にかぶっていないことを確認しています。
 
 ## 注意事項
 
-- V1〜V3のデータはテスト用の固定値であり、シミュレーターからの自動出力ではありません（該当シーンに「TEST DATA」タグを表示）。V4は実際のシミュレーター結果を使用しています。
+- V1〜V3のデータはテスト用の固定値であり、シミュレーターからの自動出力ではありません（該当シーンに「TEST DATA」タグを表示）。V4・V5は実際のシミュレーター結果を使用しています。
 - `assets/fonts/` の埋め込みフォントは各バージョンで使用する文字だけに絞ったサブセットです。テキスト内容を変更する場合はフォントの再生成が必要です。
-- V2〜V4の録画（`render-frames.v2.mjs` / `render-video.v3.mjs` / `render-video.v4.mjs`）はPlaywrightの実時間ビデオ録画を使うため、実行に実時間で30秒強かかります（スクリーンショット方式のV1より遅いですが、実際にCSSアニメーションが再生された結果を記録しています）。
+- `assets/characters/` のジャグみ素材はユーザー提供のキャラクターシートから切り出した固定素材です。新しい表情やポーズが必要になった場合は、同シートから追加で切り出すか、新しいシートの提供を受けてから追加してください（AIによる新規キャラクター生成は行っていません）。
+- V2〜V5の録画（`render-frames.v2.mjs` / `render-video.v3.mjs` / `render-video.v4.mjs` / `render-video.v5.mjs`）はPlaywrightの実時間ビデオ録画を使うため、実行に実時間で30秒強かかります（スクリーンショット方式のV1より遅いですが、実際にCSSアニメーションが再生された結果を記録しています）。
+- V5は音声（BGM/SE/ナレーション）を含みません。次のVersion 6で追加予定です。追加しやすいよう、シーンごとのタイミング情報は `scenes/timeline.v5.js` に一元化してあります。
