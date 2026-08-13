@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="ja" style="background:#050308">
+<head>
+<meta charset="utf-8" />
+<title>scene-v4</title>
+<style>
+  @font-face {
+    font-family: "NotoSansJP-Bold";
+    src: url("__FONT_BOLD_URL__") format("woff2");
+    font-weight: 700;
+    font-display: block;
+  }
+  @font-face {
+    font-family: "NotoSansJP-Black";
+    src: url("__FONT_BLACK_URL__") format("woff2");
+    font-weight: 900;
+    font-display: block;
+  }
+
+  :root {
+    --bg-1: #17101c;
+    --bg-2: #050308;
+    --fg: #f5f4fa;
+    --gold-1: #ffe9a8;
+    --gold-2: #ffb300;
+    --glow: rgba(255, 178, 41, 0.55);
+    --green: #8dff6b;
+    --red: #ff3b3b;
+    --lamp: rgba(255, 110, 40, 0.5);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: var(--bg-2);
+  }
+
+  body {
+    position: relative;
+    font-family: "NotoSansJP-Bold", "Noto Sans CJK JP", sans-serif;
+  }
+
+  /* ================= background: the visual "protagonist" ================= */
+  .bg-glow {
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(ellipse 950px 950px at 50% 34%, var(--bg-1) 0%, var(--bg-2) 68%);
+    animation: drift 20s ease-in-out infinite alternate;
+    animation-play-state: paused;
+  }
+  @keyframes drift {
+    0%   { transform: translate(-1.5%, -1%) scale(1.02); }
+    100% { transform: translate(1.5%, 1.5%) scale(1.07); }
+  }
+
+  /* GOGO-lamp-like breathing light, suggests an alert lamp without being one */
+  .bg-lamp {
+    position: absolute;
+    left: 50%;
+    top: 10%;
+    width: 760px;
+    height: 760px;
+    margin-left: -380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--lamp), transparent 65%);
+    filter: blur(4px);
+    animation: lampPulse 1.7s ease-in-out infinite;
+    animation-play-state: paused;
+  }
+  @keyframes lampPulse {
+    0%, 100% { opacity: 0.22; transform: scale(0.94); }
+    50%      { opacity: 0.55; transform: scale(1.06); }
+  }
+
+  /* slot-reel-evoking columns in the side margins: dividers + blurred
+     "symbol" blobs, scrolled via background-position (cheap, GPU-friendly,
+     no real slot artwork). */
+  .bg-reel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 90px;
+    opacity: 0.5;
+    filter: blur(0.4px);
+    background:
+      repeating-linear-gradient(180deg, rgba(255, 200, 110, 0.16) 0 4px, transparent 4px 90px),
+      repeating-radial-gradient(circle at 50% 45px, rgba(255, 214, 130, 0.4) 0 13px, transparent 14px 90px);
+    background-size: 100% 180px, 100% 180px;
+    animation: reelScroll 1.4s linear infinite;
+    animation-play-state: paused;
+  }
+  .bg-reel.left { left: 0; }
+  .bg-reel.right { right: 0; }
+  .bg-reel.mid-left { left: 90px; width: 4px; opacity: 0.3; }
+  .bg-reel.mid-right { right: 90px; width: 4px; opacity: 0.3; }
+  @keyframes reelScroll {
+    from { background-position: 0 0, 0 0; }
+    to   { background-position: 0 180px, 0 180px; }
+  }
+
+  /* thin neon strip framing the safe area, breathing glow */
+  .bg-neon {
+    position: absolute;
+    left: 90px;
+    right: 90px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold-2), transparent);
+    box-shadow: 0 0 18px 2px var(--glow);
+    animation: neonBreathe 2.1s ease-in-out infinite;
+    animation-play-state: paused;
+  }
+  .bg-neon.top { top: 296px; }
+  .bg-neon.bottom { bottom: 296px; }
+  @keyframes neonBreathe {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 0.75; }
+  }
+
+  /* diff-graph-like line, bottom margin band */
+  .bg-graph {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 1080px;
+    height: 280px;
+    opacity: 0.4;
+  }
+  .bg-graph path {
+    fill: none;
+    stroke: var(--gold-2);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 22 14;
+    animation: graphFlow 3.4s linear infinite;
+    animation-play-state: paused;
+  }
+  @keyframes graphFlow { to { stroke-dashoffset: -360; } }
+
+  /* confined to the top safe-margin band, so digits never cross into the
+     text zone */
+  .bg-digits {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 280px;
+    overflow: hidden;
+  }
+  .bg-digit {
+    position: absolute;
+    top: -40px;
+    color: rgba(255, 214, 130, 0.5);
+    font-family: "NotoSansJP-Bold", sans-serif;
+    font-weight: 700;
+    animation-name: digitFall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-play-state: paused;
+  }
+  @keyframes digitFall {
+    0%   { transform: translateY(0); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(320px); opacity: 0; }
+  }
+
+  body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 280px 50px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+  }
+
+  /* ================= scenes ================= */
+  .scene {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.035);
+    pointer-events: none;
+  }
+  .scene.zoomed { transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1); transform: scale(1); }
+
+  .safe-area {
+    position: absolute;
+    left: 90px;
+    right: 90px;
+    top: 300px;
+    bottom: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--line-gap, 40px);
+  }
+
+  .line {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    animation: lineFade 0.3s ease-out forwards;
+    animation-play-state: paused;
+  }
+  @keyframes lineFade { from { opacity: 0; } to { opacity: 1; } }
+  .line.enter-fadeUp { animation-name: lineFadeUp; }
+  @keyframes lineFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .line-fit {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 24px;
+    white-space: nowrap;
+    line-height: 1.16;
+    transform-origin: center;
+    transform: scale(var(--fit-scale, 1));
+  }
+
+  /* ---- text roles: bold fill + black stroke, high contrast ---- */
+  .role-label {
+    font-family: "NotoSansJP-Bold", sans-serif;
+    font-weight: 700;
+    font-size: var(--fs-label, 68px);
+    color: var(--fg);
+    -webkit-text-stroke: 5px #000;
+    paint-order: stroke fill;
+    letter-spacing: 2px;
+  }
+  .role-heading {
+    font-family: "NotoSansJP-Black", sans-serif;
+    font-weight: 900;
+    font-size: var(--fs-heading, 96px);
+    color: var(--fg);
+    -webkit-text-stroke: 7px #000;
+    paint-order: stroke fill;
+    letter-spacing: 1px;
+  }
+  .role-gold {
+    font-family: "NotoSansJP-Black", sans-serif;
+    font-weight: 900;
+    font-size: var(--fs-gold, 150px);
+    color: var(--gold-1);
+    -webkit-text-stroke: 8px #000;
+    paint-order: stroke fill;
+    text-shadow: 0 0 44px var(--glow);
+    letter-spacing: 1px;
+  }
+  .role-plus {
+    font-family: "NotoSansJP-Black", sans-serif;
+    font-weight: 900;
+    font-size: var(--fs-plus, 150px);
+    color: var(--green);
+    -webkit-text-stroke: 8px #000;
+    paint-order: stroke fill;
+    text-shadow: 0 0 40px rgba(141, 255, 107, 0.5);
+    letter-spacing: 1px;
+  }
+  .role-minus {
+    font-family: "NotoSansJP-Black", sans-serif;
+    font-weight: 900;
+    font-size: var(--fs-minus, 150px);
+    color: var(--red);
+    -webkit-text-stroke: 8px #000;
+    paint-order: stroke fill;
+    text-shadow: 0 0 44px rgba(255, 59, 59, 0.55);
+    letter-spacing: 1px;
+  }
+  .role-taunt {
+    font-family: "NotoSansJP-Black", sans-serif;
+    font-weight: 900;
+    font-size: var(--fs-taunt, 104px);
+    color: var(--fg);
+    -webkit-text-stroke: 6px var(--red);
+    paint-order: stroke fill;
+    letter-spacing: 1px;
+  }
+  .role-mega {
+    font-family: "NotoSansJP-Black", sans-serif;
+    font-weight: 900;
+    font-size: var(--fs-mega, 220px);
+    color: var(--gold-1);
+    -webkit-text-stroke: 11px #000;
+    paint-order: stroke fill;
+    text-shadow: 0 0 60px var(--glow);
+    letter-spacing: 0px;
+  }
+  .role-note {
+    font-family: "NotoSansJP-Bold", sans-serif;
+    font-weight: 700;
+    font-size: var(--fs-note, 44px);
+    color: #c9c6d6;
+    -webkit-text-stroke: 2px #000;
+    paint-order: stroke fill;
+    letter-spacing: 1px;
+  }
+  .role-tag {
+    font-family: "NotoSansJP-Bold", sans-serif;
+    font-weight: 700;
+    font-size: var(--fs-tag, 46px);
+    color: #d8d5e4;
+    -webkit-text-stroke: 3px #000;
+    paint-order: stroke fill;
+    letter-spacing: 1px;
+  }
+
+  /* pop-in: small -> brief overshoot -> settle */
+  .pop-normal, .pop-strong, .pop-hero, .pop-mega {
+    display: inline-block;
+    opacity: 0;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+    animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center;
+  }
+  .pop-normal { animation-name: popNormal; animation-duration: 0.42s; }
+  .pop-strong { animation-name: popStrong; animation-duration: 0.5s; }
+  .pop-hero   { animation-name: popHero;   animation-duration: 0.6s; }
+  .pop-mega   { animation-name: popMega;   animation-duration: 0.7s; }
+  @keyframes popNormal {
+    0%   { opacity: 0; transform: scale(0.86); }
+    60%  { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes popStrong {
+    0%   { opacity: 0; transform: scale(0.78); }
+    55%  { opacity: 1; transform: scale(1.18); }
+    80%  { transform: scale(0.96); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes popHero {
+    0%   { opacity: 0; transform: scale(0.7); }
+    50%  { opacity: 1; transform: scale(1.24); }
+    75%  { transform: scale(0.94); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes popMega {
+    0%   { opacity: 0; transform: scale(0.55) rotate(-1.5deg); }
+    40%  { opacity: 1; transform: scale(1.32) rotate(0.5deg); }
+    60%  { transform: scale(0.92) rotate(-0.3deg); }
+    80%  { transform: scale(1.06); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+
+  /* light screen-shake on impact, applied to .scene briefly via class */
+  .shake { animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+  @keyframes shake {
+    10%, 90% { transform: translate3d(-2px, 0, 0) scale(1); }
+    20%, 80% { transform: translate3d(4px, 0, 0) scale(1); }
+    30%, 50%, 70% { transform: translate3d(-8px, 0, 0) scale(1); }
+    40%, 60% { transform: translate3d(8px, 0, 0) scale(1); }
+    100% { transform: translate3d(0, 0, 0) scale(1); }
+  }
+
+  /* Fixed pixel size, centered on the .line via left/top + negative
+     margin (NOT percentage inset relative to the text wrapper) -- so
+     this purely decorative glow can never inflate the text's own
+     scrollWidth measurement in fitLines() below. It's a sibling of
+     .line-fit, not a descendant, for the same reason. */
+  .glow-burst, .glow-burst-mega {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 820px;
+    height: 820px;
+    margin: -410px 0 0 -410px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glow), transparent 70%);
+    opacity: 0;
+    transform: scale(0.5);
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .glow-burst { animation-name: burst; animation-duration: 0.6s; }
+  .glow-burst-mega {
+    width: 1150px;
+    height: 1150px;
+    margin: -575px 0 0 -575px;
+    animation-name: burst;
+    animation-duration: 0.9s;
+  }
+  .glow-burst-red { background: radial-gradient(circle, rgba(255, 59, 59, 0.55), transparent 70%); }
+  @keyframes burst {
+    0%   { opacity: 0; transform: scale(0.5); }
+    35%  { opacity: 0.95; }
+    100% { opacity: 0; transform: scale(1.7); }
+  }
+
+  .accent-wrap { display: inline-block; }
+
+  /* count-up odometer */
+  .countup { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <div class="bg-lamp"></div>
+  <div class="bg-reel left"></div>
+  <div class="bg-reel right"></div>
+  <div class="bg-reel mid-left"></div>
+  <div class="bg-reel mid-right"></div>
+  <div class="bg-neon top"></div>
+  <div class="bg-neon bottom"></div>
+  <svg class="bg-graph" viewBox="0 0 1080 280" preserveAspectRatio="none">
+    <path d="__GRAPH_PATH__" />
+  </svg>
+  <div class="bg-digits">__DIGITS_HTML__</div>
+
+  __SCENES_HTML__
+
+  <script>
+    function startBackground() {
+      var bg = document.querySelectorAll(
+        ".bg-glow, .bg-lamp, .bg-reel, .bg-neon, .bg-graph path, .bg-digit"
+      );
+      bg.forEach(function (el) { el.style.animationPlayState = "running"; });
+    }
+
+    function fitLines(root) {
+      var safeArea = root.querySelector(".safe-area");
+      if (!safeArea) return;
+      // Extra pixel margin accounts for -webkit-text-stroke bleed: stroke
+      // paints outside the glyph's normal advance box, so it isn't
+      // included in scrollWidth. V4's thick outlines (up to 11px) need
+      // more headroom than V1-V3's stroke-free gradient text did.
+      var maxWidth = safeArea.clientWidth - 40;
+      var fits = Array.prototype.slice.call(root.querySelectorAll(".line-fit"));
+      fits.forEach(function (fit) {
+        var natural = fit.scrollWidth;
+        if (natural > maxWidth) {
+          var scale = (maxWidth / natural) * 0.94;
+          fit.style.setProperty("--fit-scale", scale.toFixed(4));
+        }
+      });
+    }
+
+    // ---- count-up odometer: runs once per scene trigger, self-contained ----
+    function runCountUp(el) {
+      var target = parseInt(el.dataset.countTo, 10);
+      var duration = parseFloat(el.dataset.countDuration || "2.2") * 1000;
+      var suffix = el.dataset.countSuffix || "";
+      var start = performance.now();
+      function frame(now) {
+        var t = Math.min(1, (now - start) / duration);
+        var eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+        var val = Math.round(target * eased);
+        el.textContent = val.toLocaleString("ja-JP") + suffix;
+        if (t < 1) requestAnimationFrame(frame);
+        else el.textContent = target.toLocaleString("ja-JP") + suffix;
+      }
+      requestAnimationFrame(frame);
+    }
+
+    // ---- digit-roll flourish for the mega reveal: a few quick random
+    // digits flicker before settling on the real value (reel-stop feel) ----
+    function runDigitRoll(el) {
+      var final = el.dataset.rollFinal;
+      var duration = parseFloat(el.dataset.rollDuration || "0.32") * 1000;
+      var start = performance.now();
+      var digits = "0123456789";
+      function randomized() {
+        return final.replace(/[0-9]/g, function () {
+          return digits[(Math.random() * 10) | 0];
+        });
+      }
+      function frame(now) {
+        var elapsed = now - start;
+        if (elapsed < duration) {
+          el.textContent = randomized();
+          requestAnimationFrame(frame);
+        } else {
+          el.textContent = final;
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function triggerScene(sceneEl) {
+      if (sceneEl.dataset.triggered === "1") return;
+      sceneEl.dataset.triggered = "1";
+      sceneEl.classList.add("zoomed");
+      var els = sceneEl.querySelectorAll(
+        ".line, .pop-normal, .pop-strong, .pop-hero, .pop-mega, .glow-burst, .glow-burst-mega"
+      );
+      els.forEach(function (el) { el.style.animationPlayState = "running"; });
+
+      var shakeEls = sceneEl.querySelectorAll("[data-shake]");
+      shakeEls.forEach(function (el) {
+        var delay = parseFloat(el.dataset.shake || "0") * 1000;
+        setTimeout(function () { sceneEl.classList.add("shake"); }, delay);
+      });
+
+      var rollEls = sceneEl.querySelectorAll("[data-roll-final]");
+      rollEls.forEach(function (el) {
+        var delay = parseFloat(el.dataset.rollDelay || "0") * 1000;
+        setTimeout(function () { runDigitRoll(el); }, delay);
+      });
+
+      var countEls = sceneEl.querySelectorAll("[data-count-to]");
+      countEls.forEach(function (el) {
+        var delay = parseFloat(el.dataset.countDelay || "0") * 1000;
+        setTimeout(function () { runCountUp(el); }, delay);
+      });
+    }
+
+    var CROSSFADE = 0.15; // seconds -- snappier cuts suit the faster edit pace
+    var scenes = Array.prototype.slice.call(document.querySelectorAll(".scene")).map(function (el) {
+      return { el: el, start: parseFloat(el.dataset.start), end: parseFloat(el.dataset.end) };
+    });
+
+    function opacityFor(start, end, t) {
+      if (t <= start || t >= end) return 0;
+      var fadeIn = Math.min(1, (t - start) / CROSSFADE);
+      var fadeOut = Math.min(1, (end - t) / CROSSFADE);
+      return Math.min(fadeIn, fadeOut, 1);
+    }
+
+    var t0 = null;
+    function tick(now) {
+      if (t0 === null) return;
+      var t = (now - t0) / 1000;
+      scenes.forEach(function (s) {
+        if (t >= s.start - 0.02) triggerScene(s.el);
+        s.el.style.opacity = opacityFor(s.start, s.end, t).toFixed(4);
+      });
+      requestAnimationFrame(tick);
+    }
+
+    function startAll() {
+      scenes.forEach(function (s) { fitLines(s.el); });
+      startBackground();
+      t0 = performance.now();
+      document.documentElement.setAttribute("data-started", "1");
+      requestAnimationFrame(tick);
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        requestAnimationFrame(function () { requestAnimationFrame(startAll); });
+      });
+    } else {
+      startAll();
+    }
+  </script>
+</body>
+</html>

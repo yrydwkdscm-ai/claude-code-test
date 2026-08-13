@@ -34,5 +34,27 @@
   "bigProbability": "1/228",
   "regProbability": "1/241",
   "combinedProbability": "1/117",
-  "grapeProbability": "1/5.61"
+  "grapeProbability": "1/5.61",
+
+  "v4": {
+    "_comment": "Version 4: real simulator output (not test data), namespaced separately from the fields above so it never collides with V1-V3's keys in this shared demo file. A future automation pipeline would likely hand the video generator a JSON shaped like this object directly, without the version nesting.",
+    "isRealData": true,
+    "machine": "マイジャグラーV",
+    "setting": 6,
+    "gamesPerPerson": 8000,
+    "participants": 10000,
+    "totalGames": 80000000,
+    "averageDifference": 2801.7,
+    "winRate": 96.89,
+    "lossRate": 3.11,
+    "payoutRate": 111.64,
+    "bigProbability": "1/229.02",
+    "regProbability": "1/228.66",
+    "combinedProbability": "1/114.42",
+    "grapeProbability": "1/5.67",
+    "cherryProbability": "1/33.03",
+    "replayProbability": "1/7.29",
+    "maxDifference": 9002,
+    "minDifference": -2816
+  }
 }

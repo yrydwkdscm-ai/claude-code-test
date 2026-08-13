@@ -13,7 +13,10 @@
     "all:v2": "npm run render:v2 && npm run video:v2",
     "render:v3": "node scripts/render-video.v3.mjs",
     "video:v3": "node scripts/build-video.v3.mjs",
-    "all:v3": "npm run render:v3 && npm run video:v3"
+    "all:v3": "npm run render:v3 && npm run video:v3",
+    "render:v4": "node scripts/render-video.v4.mjs",
+    "video:v4": "node scripts/build-video.v4.mjs",
+    "all:v4": "npm run render:v4 && npm run video:v4"
   },
   "devDependencies": {
     "playwright-core": "^1.48.0"
