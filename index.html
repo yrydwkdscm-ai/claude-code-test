@@ -8,13 +8,24 @@
 </head>
 <body>
   <main class="container">
-    <h1>サイコロアプリ</h1>
+    <header class="app-header">
+      <p class="eyebrow">SIMPLE DICE</p>
+      <h1>サイコロアプリ</h1>
+      <p class="lead">ボタンを押して、今日の運を試してみよう。</p>
+    </header>
 
-    <div class="dice" id="dice">
-      <span id="dice-number">?</span>
-    </div>
+    <section class="dice-card" aria-label="サイコロの結果">
+      <p class="result-label">出た目</p>
+      <div class="dice" id="dice" aria-live="polite" aria-atomic="true">
+        <span id="dice-number">?</span>
+      </div>
+      <p class="hint">1〜6の数字が表示されます</p>
+    </section>
 
-    <button id="roll-button">サイコロを振る</button>
+    <button id="roll-button" type="button">
+      <span aria-hidden="true">🎲</span>
+      サイコロを振る
+    </button>
   </main>
 
   <script src="script.js"></script>
